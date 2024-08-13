@@ -1,0 +1,27 @@
+services:
+  traefik:
+    image: traefik:v2.9
+    command:
+      - "--api.insecure=true"                   # Enable Traefik's web UI at /dashboard
+      - "--providers.docker=true"               # Enable Docker as a provider
+      - "--entrypoints.web.address=:80"         # Listen on port 80 for incoming requests
+    ports:
+      - "80:80"                                 # Expose HTTP
+      - "8080:8080"                             # Expose Traefik dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Read-only access to Docker socket
+
+  whoami:
+    image: traefik/whoami                       # Use the whoami image
+    labels:
+      - "traefik.enable=true"                   # Enable Traefik for this service
+      - "traefik.http.routers.whoami123.rule=Host(`whoami.localhost`)" # Host rule for routing
+      - "traefik.http.services.whoami123.loadbalancer.server.port=80"
+
+  apache:
+    image: httpd:latest                         # Use the official Apache HTTP Server image
+    labels:
+      - "traefik.enable=true"                   # Enable Traefik for this service
+      - "traefik.http.routers.apache456.rule=Host(`apache.localhost`)" # Host rule for routing
+      - "traefik.http.services.apache456.loadbalancer.server.port=80"
+
