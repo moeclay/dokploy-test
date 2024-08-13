@@ -1,16 +1,4 @@
 services:
-  traefik:
-    image: traefik:v2.9
-    command:
-      - "--api.insecure=true"                   # Enable Traefik's web UI at /dashboard
-      - "--providers.docker=true"               # Enable Docker as a provider
-      - "--entrypoints.web.address=:80"         # Listen on port 80 for incoming requests
-    ports:
-      - "80:80"                                 # Expose HTTP
-      - "8080:8080"                             # Expose Traefik dashboard
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro # Read-only access to Docker socket
-
   whoami:
     image: traefik/whoami                       # Use the whoami image
     labels:
